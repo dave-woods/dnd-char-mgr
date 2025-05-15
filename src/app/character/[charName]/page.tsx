@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const knownCharacters = ['thar', 'echo', 'akma', 'nib']
+// const knownCharacters = ['thar', 'echo', 'akma', 'nib']
 
 export default async function Character({
     params
@@ -8,11 +8,16 @@ export default async function Character({
     params: Promise<{charName: string}>
 }) {
     const { charName } = await params
-    if (!knownCharacters.includes(charName)) {
+    const knownCharacters: [{
+        name: string
+    }] = await fetch('http://localhost:3000/api/character').then(data => data.json())
+
+    if (!knownCharacters.map(c => c.name).includes(charName)) {
         return (
             <div>Error. Character not known.</div>
         )
     }
+
     return (
     <main>
         <div className="character-card">
@@ -99,6 +104,7 @@ export default async function Character({
                     </tbody>
                 </table>
                 <table className="skills">
+                    <tbody>
                     <tr className="acrobatics">
                         <td>Dex</td>
                         <td>Acrobatics</td>
@@ -172,6 +178,7 @@ export default async function Character({
                         <td>Survival</td>
                         <td className="modifier">+0</td>
                     </tr>
+                    </tbody>
                 </table>
             </section>
         </div>
