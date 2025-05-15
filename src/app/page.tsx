@@ -1,6 +1,9 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 
+import Character from "./character/[charName]/page";
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className={styles.page}>
@@ -21,6 +24,7 @@ export default function Home() {
         </ol>
 
         <div className={styles.ctas}>
+          <Link href={'/character'}>To char page</Link>
           <a
             className={styles.primary}
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
