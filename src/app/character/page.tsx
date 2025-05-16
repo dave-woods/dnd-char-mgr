@@ -1,11 +1,14 @@
 import Link from "next/link";
 
 export default async function CharacterSelect() {
+    const knownCharacters: DnDCharacter[] = await fetch('http://localhost:3000/api/character').then(data => data.json())
     return (
         <ul>
-            <li><Link href={'/character/akma'}>Akma</Link></li>
-            <li><Link href={'/character/echo'}>Echo</Link></li>
-            <li><Link href={'/character/thar'}>Thar</Link></li>
+            {knownCharacters.map((kc, idx) => {
+                return <li key={idx}>
+                    <Link href={`/character/${kc.name}`}>{kc.fullName}</Link>
+                </li>
+            })}
         </ul>
     )
 }

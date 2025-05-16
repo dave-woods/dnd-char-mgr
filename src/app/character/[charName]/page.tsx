@@ -10,15 +10,13 @@ export default async function Character({
     params: Promise<{charName: string}>
 }) {
     const { charName } = await params
-    const knownCharacters: DnDCharacter[] = await fetch('http://localhost:3000/api/character').then(data => data.json())
-    const character = knownCharacters.find(c => c.name === charName)
+    const character: DnDCharacter = await fetch(`http://localhost:3000/api/character/${charName}`).then(data => data.json())
 
     if (!character) {
         return (
             <div>Error. Character not known.</div>
         )
     }
-    const charModis = Object.fromEntries(Object.entries(character.stats).map(([statName, statValue]) => ([statName, statToModi(statValue)]))) as DnDScores
 
     return (
     <main>
