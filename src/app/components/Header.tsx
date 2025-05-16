@@ -6,6 +6,7 @@ export default function Header() {
         <header>
             <nav className={styles.nav}>
                 <Link href={'/'}>Home</Link>
+                <Link href={'/character'}>Characters</Link>
             </nav>
         </header>
     )

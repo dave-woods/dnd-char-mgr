@@ -1,6 +1,8 @@
-import Link from "next/link";
-
-// const knownCharacters = ['thar', 'echo', 'akma', 'nib']
+import { skillToStat } from "@/_lib/util";
+import SkillTableRow from "@/app/components/character/SkillTableRow";
+import styles from './character.module.css'
+import { statToModi } from "@/_lib/util";
+import ModifierTableElement from "@/app/components/character/ModifierTableElement";
 
 export default async function Character({
     params
@@ -8,24 +10,24 @@ export default async function Character({
     params: Promise<{charName: string}>
 }) {
     const { charName } = await params
-    const knownCharacters: [{
-        name: string
-    }] = await fetch('http://localhost:3000/api/character').then(data => data.json())
+    const knownCharacters: DnDCharacter[] = await fetch('http://localhost:3000/api/character').then(data => data.json())
+    const character = knownCharacters.find(c => c.name === charName)
 
-    if (!knownCharacters.map(c => c.name).includes(charName)) {
+    if (!character) {
         return (
             <div>Error. Character not known.</div>
         )
     }
+    const charModis = Object.fromEntries(Object.entries(character.stats).map(([statName, statValue]) => ([statName, statToModi(statValue)]))) as DnDScores
 
     return (
     <main>
-        <div className="character-card">
-            <h1 className="shortname">{charName}</h1>
-            <h2 className="longname">{charName}</h2>
+        <div className={styles.card}>
+            <h1 className="shortname">{character.name}</h1>
+            <h2 className="longname">{character.fullName}</h2>
             <section className="details">
                 <h3>Details</h3>
-                <table>
+                <table className={styles.table}>
                     <thead>
                         <tr>
                             <th>Level</th>
@@ -38,33 +40,33 @@ export default async function Character({
                     </thead>
                     <tbody>
                         <tr>
-                            <td>_</td>
-                            <td>_</td>
-                            <td>_</td>
-                            <td>_</td>
-                            <td>_</td>
-                            <td>_</td>
+                            <td>{character.level}</td>
+                            <td>{character.class}</td>
+                            <td>{character.subclass}</td>
+                            <td>{character.background}</td>
+                            <td>{character.species}</td>
+                            <td>{character.alignment}</td>
                         </tr>
                     </tbody>
                 </table>
             </section>
             <section className="description">
                 <h3>Description</h3>
-                <h4>Appearance</h4>
-                <div>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque dolorem corporis magnam, aliquid fuga temporibus iusto est perferendis voluptate consequuntur accusamus libero esse, sapiente autem. Quo ex ipsam modi nemo.</p>
-                </div>
-                <h4>Background</h4>
-                <div>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aspernatur ipsum praesentium officiis eaque aliquam, ea minus eius, odit, ex quaerat architecto temporibus molestiae magni numquam aperiam ullam adipisci ut saepe.</p>
-                </div>
+                {character.appearance ? <div>
+                    <h4>Appearance</h4>
+                    <p>{character.appearance}</p>
+                </div> : ''}
+                {character.backstory ? <div>
+                    <h4>Background</h4>
+                    <p>{character.backstory}</p>
+                </div> : ''}
             </section>
             <section className="stats">
                 <h3>Stats</h3>
-                <table>
+                <table className={styles.table}>
                     <thead>
                         <tr>
-                            <td></td>
+                            <th></th>
                             <th>Str</th>
                             <th>Dex</th>
                             <th>Con</th>
@@ -76,108 +78,35 @@ export default async function Character({
                     <tbody>
                         <tr className="score">
                             <th>Score</th>
-                            <td>10</td>
-                            <td>10</td>
-                            <td>10</td>
-                            <td>10</td>
-                            <td>10</td>
-                            <td>10</td>
+                            <td>{character.stats.Str}</td>
+                            <td>{character.stats.Dex}</td>
+                            <td>{character.stats.Con}</td>
+                            <td>{character.stats.Int}</td>
+                            <td>{character.stats.Wis}</td>
+                            <td>{character.stats.Cha}</td>
                         </tr>
                         <tr className="modifier">
                             <th>Modifier</th>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
+                            {Object.keys(character.stats).map((stat, idx) => {
+                                return <ModifierTableElement key={idx} character={character} stat={stat as DnDStatName} />
+                            })}
                         </tr>
                         <tr className="saving-throw">
                             <th>Saving Throw</th>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
-                            <td>+0</td>
+                            {Object.keys(character.stats).map((stat, idx) => {
+                                return <ModifierTableElement key={idx} character={character} stat={stat as DnDStatName} savingThrow/>
+                            })}
                         </tr>
                     </tbody>
                 </table>
-                <table className="skills">
+            </section>
+            <section>
+                <h3>Skills</h3>
+                <table className={styles.table}>
                     <tbody>
-                    <tr className="acrobatics">
-                        <td>Dex</td>
-                        <td>Acrobatics</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="animal-handling">
-                        <td>Wis</td>
-                        <td>Animal Handling</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="arcana">
-                        <td>Int</td>
-                        <td>Arcana</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="athletics">
-                        <td>Str</td>
-                        <td>Athletics</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="deception">
-                        <td>Cha</td>
-                        <td>Deception</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="history">
-                        <td>Int</td>
-                        <td>History</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="insight">
-                        <td>Wis</td>
-                        <td>Insight</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="intimidation">
-                        <td>Cha</td>
-                        <td>Intimidation</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="investigation">
-                        <td>Int</td>
-                        <td>Investigation</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="medicine">
-                        <td>Wis</td>
-                        <td>Medicine</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="nature">
-                        <td>Int</td>
-                        <td>Nature</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="perception">
-                        <td>Wis</td>
-                        <td>Perception</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="performance">
-                        <td>Cha</td>
-                        <td>Performance</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="persuasion">
-                        <td>Cha</td>
-                        <td>Persuasion</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="religion">
-                        <td>Int</td>
-                        <td>Religion</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="sleight-of-hand">
-                        <td>Dex</td>
-                        <td>Slight Of Hand</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="stealth">
-                        <td>Dex</td>
-                        <td>Stealth</td>
-                        <td className="modifier">+0</td>
-                    </tr><tr className="survival">
-                        <td>Wis</td>
-                        <td>Survival</td>
-                        <td className="modifier">+0</td>
-                    </tr>
+                        {Object.keys(skillToStat).map((skillName, idx) => {
+                            return <SkillTableRow key={idx} character={character} skill={skillName as DnDSkill}/>
+                        })}
                     </tbody>
                 </table>
             </section>
