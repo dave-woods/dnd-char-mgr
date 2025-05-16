@@ -1,15 +1,16 @@
 'use client'
 
-import { skillToStat, statToModi } from "@/_lib/util"
+import { skillToStat, scoreToModi } from "@/_lib/util"
 
 export default function SkillTableRow({character, skill}: {
     character: DnDCharacter,
     skill: DnDSkill
 }) {
     const stat = skillToStat[skill] as DnDStatName
-    const calculatedBonus = statToModi(character.stats[stat]) + (character.proficientSkills.includes(skill) ? character.proficiency : 0) + (character.expertiseSkills?.includes(skill) ? character.proficiency : 0)
+    const { scores, proficiency, proficientSkills, expertiseSkills} = character.stats
+    const calculatedBonus = scoreToModi(scores[stat]) + (proficientSkills.includes(skill) ? proficiency : 0) + (expertiseSkills?.includes(skill) ? proficiency : 0)
     return (
-        <tr className={character.proficientSkills.includes('Acrobatics') ? 'proficient' : ''}>
+        <tr className={proficientSkills.includes('Acrobatics') ? 'proficient' : ''}>
             <td>{stat}</td>
             <td>{skill}</td>
             <td>{calculatedBonus >= 0 ? '+' : ''}{calculatedBonus}</td>

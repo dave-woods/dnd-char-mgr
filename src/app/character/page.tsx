@@ -6,7 +6,7 @@ export default async function CharacterSelect() {
         <ul>
             {knownCharacters.map((kc, idx) => {
                 return <li key={idx}>
-                    <Link href={`/character/${kc.name}`}>{kc.fullName}</Link>
+                    <Link href={`/character/${kc.name}`}>{kc.details.fullName}</Link>
                 </li>
             })}
         </ul>

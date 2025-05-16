@@ -19,6 +19,6 @@ export const skillToStat = {
     'Survival': 'Wis'
 }
 
-export const statToModi = (stat: number) => {
+export const scoreToModi = (stat: number) => {
     return Math.floor((stat - 10) / 2)
 }

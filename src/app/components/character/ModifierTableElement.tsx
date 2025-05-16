@@ -1,13 +1,14 @@
 'use client'
 
-import { statToModi } from "@/_lib/util"
+import { scoreToModi } from "@/_lib/util"
 
 export default function ModifierTableElement({character, stat, savingThrow = false}: {
     character: DnDCharacter,
     stat: DnDStatName,
     savingThrow?: boolean
 }) {
-    const calculatedBonus = statToModi(character.stats[stat]) + (savingThrow && character.savingThrows.includes(stat) ? character.proficiency : 0)
+    const { scores, savingThrows, proficiency } = character.stats
+    const calculatedBonus = scoreToModi(scores[stat]) + (savingThrow && savingThrows.includes(stat) ? proficiency : 0)
     return (
         <td>{calculatedBonus >= 0 ? '+' : ''}{calculatedBonus}</td>
     )

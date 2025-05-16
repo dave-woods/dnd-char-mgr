@@ -1,7 +1,7 @@
 import { skillToStat } from "@/_lib/util";
 import SkillTableRow from "@/app/components/character/SkillTableRow";
 import styles from './character.module.css'
-import { statToModi } from "@/_lib/util";
+import { scoreToModi } from "@/_lib/util";
 import ModifierTableElement from "@/app/components/character/ModifierTableElement";
 
 export default async function Character({
@@ -21,8 +21,8 @@ export default async function Character({
     return (
     <main>
         <div className={styles.card}>
-            <h1 className="shortname">{character.name}</h1>
-            <h2 className="longname">{character.fullName}</h2>
+            {/* <h1 className="shortname">{character.name}</h1> */}
+            <h2 className="longname">{character.details.fullName}</h2>
             <section className="details">
                 <h3>Details</h3>
                 <table className={styles.table}>
@@ -33,30 +33,32 @@ export default async function Character({
                             <th>Subclass</th>
                             <th>Background</th>
                             <th>Species</th>
-                            <th>Alignment</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{character.level}</td>
-                            <td>{character.class}</td>
-                            <td>{character.subclass}</td>
-                            <td>{character.background}</td>
-                            <td>{character.species}</td>
-                            <td>{character.alignment}</td>
+                            <td>{character.details.level}</td>
+                            <td>{character.details.class}</td>
+                            <td>{character.details.subclass}</td>
+                            <td>{character.details.background}</td>
+                            <td>{character.details.species}</td>
                         </tr>
                     </tbody>
                 </table>
             </section>
             <section className="description">
                 <h3>Description</h3>
-                {character.appearance ? <div>
+                <div>
+                    <h4>Alignment</h4>
+                    <p>{character.description.alignment}</p>
+                </div>
+                {character.description.appearance ? <div>
                     <h4>Appearance</h4>
-                    <p>{character.appearance}</p>
+                    <p>{character.description.appearance}</p>
                 </div> : ''}
-                {character.backstory ? <div>
+                {character.description.backstory ? <div>
                     <h4>Background</h4>
-                    <p>{character.backstory}</p>
+                    <p>{character.description.backstory}</p>
                 </div> : ''}
             </section>
             <section className="stats">
@@ -76,22 +78,22 @@ export default async function Character({
                     <tbody>
                         <tr className="score">
                             <th>Score</th>
-                            <td>{character.stats.Str}</td>
-                            <td>{character.stats.Dex}</td>
-                            <td>{character.stats.Con}</td>
-                            <td>{character.stats.Int}</td>
-                            <td>{character.stats.Wis}</td>
-                            <td>{character.stats.Cha}</td>
+                            <td>{character.stats.scores.Str}</td>
+                            <td>{character.stats.scores.Dex}</td>
+                            <td>{character.stats.scores.Con}</td>
+                            <td>{character.stats.scores.Int}</td>
+                            <td>{character.stats.scores.Wis}</td>
+                            <td>{character.stats.scores.Cha}</td>
                         </tr>
                         <tr className="modifier">
                             <th>Modifier</th>
-                            {Object.keys(character.stats).map((stat, idx) => {
+                            {Object.keys(character.stats.scores).map((stat, idx) => {
                                 return <ModifierTableElement key={idx} character={character} stat={stat as DnDStatName} />
                             })}
                         </tr>
                         <tr className="saving-throw">
                             <th>Saving Throw</th>
-                            {Object.keys(character.stats).map((stat, idx) => {
+                            {Object.keys(character.stats.scores).map((stat, idx) => {
                                 return <ModifierTableElement key={idx} character={character} stat={stat as DnDStatName} savingThrow/>
                             })}
                         </tr>
